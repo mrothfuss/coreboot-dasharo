@@ -500,6 +500,16 @@ static void sb700_sm_set_resources(struct device *dev)
 
 	pci_dev_set_resources(dev);
 
+	/*
+	 * Enable SB MMIO
+	 *
+	 * Keep this close to pci_dev_set_resources() to re-enable serial console
+	 * as soon as possible.
+	 */
+	byte = pci_read_config8(dev, SB_MMIO_CFG_REG);
+	byte |= 1;
+	pci_write_config8(dev, SB_MMIO_CFG_REG, byte);
+
 	/* Program HPET BAR Address */
 	res = find_resource(dev, HPET_RESOURCE_NUMBER);
 	res->flags |= IORESOURCE_STORED;
