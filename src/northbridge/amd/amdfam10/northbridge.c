@@ -488,6 +488,7 @@ static void amdfam10_create_vga_resource(struct device *dev, unsigned int nodeid
 	res = amdfam10_assign_new_mmio_res(0xa0000, 0x20000);
 	if (res)
 		res->flags = IORESOURCE_MEM | IORESOURCE_ASSIGNED | IORESOURCE_FIXED;
+	reserved_ram_resource(dev, 6, 0xa0000 >> 10, 0x20000 >> 10);
 }
 
 static void amdfam10_read_resources(struct device *dev)
@@ -744,7 +745,7 @@ static void amdfam10_domain_read_resources(struct device *dev)
 
 	/* Reserve everything between A segment and 1MB:
 	 *
-	 * 0xa0000 - 0xbffff: legacy VGA (reserved by Aspeed driver, not here)
+	 * 0xa0000 - 0xbffff: legacy VGA (handled by amdfam10_create_vga_resource())
 	 * 0xc0000 - 0xfffff: option ROMs and SeaBIOS (if used)
 	 */
 	reserved_ram_resource(dev, idx++, 0xc0000 >> 10, (0x100000 - 0xc0000) >> 10);
